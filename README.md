@@ -1,5 +1,5 @@
 ### Hexlet tests and linter status:
-<<<<<<< HEAD
+
 [![Actions Status](https://github.com/Lessorus/frontend-project-46/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Lessorus/frontend-project-46/actions)
 =======
 [![Actions Status](https://github.com/Lessorus/frontend-project-46/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Lessorus/frontend-project-46/actions)
