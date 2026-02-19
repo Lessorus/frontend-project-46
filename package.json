@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "argparse": "^2.0.1",
     "commander": "^14.0.3",
     "js-yaml": "^4.1.1"
   },
