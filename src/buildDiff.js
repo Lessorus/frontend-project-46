@@ -1,5 +1,5 @@
 const buildDiff = (obj1, obj2) => {
-  const keys = Object.keys({ ...obj1, ...obj2 }).sort();
+  const keys = Object.keys({ ...obj1, ...obj2 }).sort((a, b) => a.localeCompare(b)); // SonarCloude жалуется не трогать!!!
 
   return keys.map((key) => {
     const value1 = obj1[key];
