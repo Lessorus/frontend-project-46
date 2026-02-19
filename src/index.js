@@ -1,16 +1,4 @@
-import { resolve, extname } from 'path';
-import { readFileSync } from 'fs';
-
-// Вспомогательная функция для чтения и парсинга
-const parseFile = (filepath) => {
-  const absolutePath = resolve(process.cwd(), filepath);
-  const extension = extname(filepath).toLowerCase();
-  const content = readFileSync(absolutePath, 'utf-8');
-  if (extension === '.json') {
-    return JSON.parse(content);
-  }
-  return {};
-};
+import parseFile from './parsers.js';
 
 const genDiff = (path1, path2) => {
   const obj1 = parseFile(path1);
@@ -27,20 +15,18 @@ const genDiff = (path1, path2) => {
 
     // СЛУЧАЙ 1: Ключ есть только в первом объекте (удален)
     if (in1 && !in2) {
-      return `- ${key}: ${obj1[key]}`; // Возвращаем одну строку
+      return `- ${key}: ${obj1[key]}`;
     }
 
     // СЛУЧАЙ 2: Ключа нет в первом, но есть во втором (добавлен)
     if (!in1 && in2) {
-      return `+ ${key}: ${obj2[key]}`; // Возвращаем одну строку
+      return `+ ${key}: ${obj2[key]}`;
     }
 
     // СЛУЧАЙ 3: Ключ есть в обоих, но значения разные (изменен)
     if (in1 && in2 && obj1[key] !== obj2[key]) {
       // ВОТ ТУТ МАГИЯ flatMap:
       // Мы возвращаем массив из ДВУХ строк.
-      // Обычный map сделал бы массив внутри массива,
-      // а flatMap «вытащит» эти две строки в общий список lines.
       return [
         `- ${key}: ${obj1[key]}`,
         `+ ${key}: ${obj2[key]}`,
@@ -48,7 +34,7 @@ const genDiff = (path1, path2) => {
     }
 
     // СЛУЧАЙ 4: Значения одинаковые (не изменился)
-    return `  ${key}: ${obj1[key]}`; // Возвращаем одну строку
+    return `  ${key}: ${obj1[key]}`;
   });
 
   // Собираем массив строк в одну финальную строку с фигурными скобками
