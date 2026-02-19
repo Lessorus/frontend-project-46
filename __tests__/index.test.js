@@ -20,11 +20,10 @@ describe('gendiff', () => {
     expect(result).toBe(expected);
   });
 
-  
   test('genDiff should return correct diff for flat YAML', () => {
     const path1 = getFixturePath('file1.yml');
     const path2 = getFixturePath('file2.yml');
-    const expected = readFile('expected.txt').trim(); 
+    const expected = readFile('expected.txt').trim();
 
     const result = genDiff(path1, path2);
     expect(result).toBe(expected);
