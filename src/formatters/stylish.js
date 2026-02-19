@@ -13,9 +13,11 @@ const stylish = (diffTree, depth = 0) => {
   // Если depth не передан, начинаем с 0, но тогда indent будет отрицательным
   // Поэтому добавим защиту
   const currentDepth = depth === undefined ? 0 : depth;
-  
+
   const lines = diffTree.map((node) => {
-    const { key, type, value, oldValue, newValue, children } = node;
+    const {
+      key, type, value, oldValue, newValue, children,
+    } = node;
     const currentIndent = indent(currentDepth);
 
     switch (type) {
