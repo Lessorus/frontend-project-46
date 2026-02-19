@@ -1,45 +1,18 @@
 import parseFile from './parsers.js';
+import buildDiff from './buildDiff.js';
+import stylish from './formatters/stylish.js';
 
-const genDiff = (path1, path2) => {
-  const obj1 = parseFile(path1);
-  const obj2 = parseFile(path2);
+const genDiff = (filepath1, filepath2, format = 'stylish') => {
+  const obj1 = parseFile(filepath1);
+  const obj2 = parseFile(filepath2);
 
-  // Получаем все уникальные ключи из обоих объектов и сортируем их
-  const allKeys = Object.keys({ ...obj1, ...obj2 }).sort();
+  const diffTree = buildDiff(obj1, obj2);
 
-  // Вместо создания пустого массива и цикла for...of,
-  // мы сразу создаем итоговый массив строк через flatMap
-  const lines = allKeys.flatMap((key) => {
-    const in1 = Object.hasOwn(obj1, key);
-    const in2 = Object.hasOwn(obj2, key);
-
-    // СЛУЧАЙ 1: Ключ есть только в первом объекте (удален)
-    if (in1 && !in2) {
-      return `- ${key}: ${obj1[key]}`;
-    }
-
-    // СЛУЧАЙ 2: Ключа нет в первом, но есть во втором (добавлен)
-    if (!in1 && in2) {
-      return `+ ${key}: ${obj2[key]}`;
-    }
-
-    // СЛУЧАЙ 3: Ключ есть в обоих, но значения разные (изменен)
-    if (in1 && in2 && obj1[key] !== obj2[key]) {
-      // ВОТ ТУТ МАГИЯ flatMap:
-      // Мы возвращаем массив из ДВУХ строк.
-      return [
-        `- ${key}: ${obj1[key]}`,
-        `+ ${key}: ${obj2[key]}`,
-      ];
-    }
-
-    // СЛУЧАЙ 4: Значения одинаковые (не изменился)
-    return `  ${key}: ${obj1[key]}`;
-  });
-
-  // Собираем массив строк в одну финальную строку с фигурными скобками
-  // Перед каждой строкой добавляем еще 2 пробела для красоты отступа
-  return `{\n${lines.map((l) => `  ${l}`).join('\n')}\n}`;
+  if (format === 'stylish') {
+    // Передаём глубину 1, чтобы отступы для первого уровня стали 2 пробела
+    return `{\n${stylish(diffTree, 1)}\n}`;
+  }
+  throw new Error(`Unknown format: ${format}`);
 };
 
 export default genDiff;
