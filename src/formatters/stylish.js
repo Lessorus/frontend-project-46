@@ -10,33 +10,31 @@ const stringify = (value, depth) => {
 };
 
 const stylish = (diffTree, depth = 0) => {
-  // Если depth не передан, начинаем с 0, но тогда indent будет отрицательным
-  // Поэтому добавим защиту
-  const currentDepth = depth === undefined ? 0 : depth;
-
   const lines = diffTree.map((node) => {
-    const {
-      key, type, value, oldValue, newValue, children,
-    } = node;
-    const currentIndent = indent(currentDepth);
+    const { key, type, value, oldValue, newValue, children } = node;
+    const currentIndent = indent(depth);
 
     switch (type) {
       case 'nested':
-        return `${currentIndent}  ${key}: {\n${stylish(children, currentDepth + 1)}\n${currentIndent}  }`;
+        // Убираем скобки вокруг children, они добавятся в рекурсии
+        return `${currentIndent}  ${key}: {\n${stylish(children, depth + 1)}\n${currentIndent}  }`;
       case 'added':
-        return `${currentIndent}+ ${key}: ${stringify(value, currentDepth)}`;
+        return `${currentIndent}+ ${key}: ${stringify(value, depth)}`;
       case 'removed':
-        return `${currentIndent}- ${key}: ${stringify(value, currentDepth)}`;
+        return `${currentIndent}- ${key}: ${stringify(value, depth)}`;
       case 'changed':
-        return `${currentIndent}- ${key}: ${stringify(oldValue, currentDepth)}\n${currentIndent}+ ${key}: ${stringify(newValue, currentDepth)}`;
+        return `${currentIndent}- ${key}: ${stringify(oldValue, depth)}\n${currentIndent}+ ${key}: ${stringify(newValue, depth)}`;
       case 'unchanged':
-        return `${currentIndent}  ${key}: ${stringify(value, currentDepth)}`;
+        return `${currentIndent}  ${key}: ${stringify(value, depth)}`;
       default:
         throw new Error(`Unknown type: ${type}`);
     }
   });
 
-  return lines.join('\n');
+  const result = lines.join('\n');
+  
+  // Добавляем скобки ТОЛЬКО на самом верхнем уровне (depth === 0)
+  return depth === 0 ? `{\n${result}\n}` : result;
 };
 
 export default stylish;
