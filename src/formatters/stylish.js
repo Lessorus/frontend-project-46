@@ -11,7 +11,9 @@ const stringify = (value, depth) => {
 
 const stylish = (diffTree, depth = 0) => {
   const lines = diffTree.map((node) => {
-    const { key, type, value, oldValue, newValue, children } = node;
+    const {
+      key, type, value, oldValue, newValue, children,
+    } = node;
     const currentIndent = indent(depth);
 
     switch (type) {
@@ -32,7 +34,7 @@ const stylish = (diffTree, depth = 0) => {
   });
 
   const result = lines.join('\n');
-  
+
   // Добавляем скобки ТОЛЬКО на самом верхнем уровне (depth === 0)
   return depth === 0 ? `{\n${result}\n}` : result;
 };
